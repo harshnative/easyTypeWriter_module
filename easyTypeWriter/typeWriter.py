@@ -44,20 +44,28 @@ class _GetchWindows:
 getch = _Getch()
 
 
+
 # thread for enter key sound
 class enterSound(Thread):
     # function name should be run 
+
+    def setPath(self , path):
+        self.path = path
+
     def run(self):
-        playsound('ding3.wav')
+        try:
+            playsound(self.path)
+        except Exception:
+            raise Exception("please download the enter sound file from link and pass it to setEnterAudioPath() , link - https://drive.google.com/uc?export=download&id=1mN_-vyRsHWK8qsHP16ktL9G0XX3RCbB9 . If the file is not available to download then you can download the file from here - https://github.com/harshnative/easyTypeWriter_module_python/tree/master/easyTypeWriter")
+        
 
 
-
-# function to play keyboard sound using 
-def sound():
-    playsound('keysound.wav')
-
-# object for enter key sound 
-sound2 = enterSound()
+# function to play keyboard sound at 30% extra speed
+def sound30():
+    try:
+        playsound('keysound30.wav')
+    except Exception:
+        raise Exception("please download the keyboard sound file from link and pass it to setKeyboardAudioPath() , link - https://drive.google.com/uc?export=download&id=1qGSaacUgs6MEoI18W0uQOTq5yYSwo_Iv . If the file is not available to download then you can download the file from here - https://github.com/harshnative/easyTypeWriter_module_python/tree/master/easyTypeWriter")
 
 
 # main module class
@@ -68,6 +76,11 @@ class EasyInput:
 
         # tab space - how many spaces will tab make in string
         self.tabValue = 4
+
+        self.enterAudioPath = None
+        self.keyboardAudioPath = None
+
+        self.obj = enterSound()
 
         # byte code character dictionary
         self.dict = {
@@ -192,8 +205,23 @@ class EasyInput:
             raise ValueError("please pass only positive integer value to setTabSpaceValue function")
 
 
+    # set enter sound audio file path
+    def setEnterAudioPath(self, fullPath):
+        self.enterAudioPath = fullPath
+        self.obj.setPath(self.enterAudioPath)
+
+    # set enter sound audio file path
+    def setKeyboardAudioPath(self, fullPath):
+        self.keyboardAudioPath = fullPath    
+
     # main function of the module
-    def takeInput(self , makeSound = False , messagePrompt = "" , toReturn = False):
+    def takeInput(self , makeSound = True , messagePrompt = "" , toReturn = False):
+        if((self.enterAudioPath == None)):
+            raise Exception("please download the enter sound file from link and pass it to setEnterAudioPath() , link - https://drive.google.com/uc?export=download&id=1mN_-vyRsHWK8qsHP16ktL9G0XX3RCbB9 . If the file is not available to download then you can download the file from here - https://github.com/harshnative/easyTypeWriter_module_python/tree/master/easyTypeWriter")
+        
+        if((self.keyboardAudioPath == None)):
+            raise Exception("please download the keyboard sound file from link and pass it to setKeyboardAudioPath() , link - https://drive.google.com/uc?export=download&id=1qGSaacUgs6MEoI18W0uQOTq5yYSwo_Iv . If the file is not available to download then you can download the file from here - https://github.com/harshnative/easyTypeWriter_module_python/tree/master/easyTypeWriter")
+
         string = messagePrompt
         messageLength = len(messagePrompt)
 
@@ -211,7 +239,7 @@ class EasyInput:
 
                     # making sound
                     if(makeSound):
-                        sound2.start()
+                        self.obj.start()
 
                     # returning the string by cutting the message prompt from the string
                     return string[messageLength:]
@@ -220,7 +248,7 @@ class EasyInput:
                 elif(x == b"\x08"):
 
                     if(makeSound):
-                        sound()
+                        playsound(self.keyboardAudioPath)
 
                     l = len(string)
 
@@ -241,13 +269,13 @@ class EasyInput:
                 # if the key pressed is backspace the add " " to the string 
                 elif(x == b' '):
                     if(makeSound):
-                        sound()
+                        playsound(self.keyboardAudioPath)
                     string = string + " "
 
                 # if the key pressed is tab then add ( " " * self.tabValue ) to teh string 
                 elif(x == b'\t'):
                     if(makeSound):
-                        sound()
+                        playsound(self.keyboardAudioPath)
                     for _ in range(self.tabValue):
                         string = string + " "
 
@@ -258,7 +286,7 @@ class EasyInput:
             # adding value from the dictionary to the string
             else:
                 if(makeSound):
-                    sound()
+                    playsound(self.keyboardAudioPath)
                 y = self.dict.get(x)
                 string = string + y
 
@@ -271,5 +299,7 @@ class EasyInput:
 if __name__ == "__main__":
     obj = EasyInput()            
     print("started")
+    obj.setEnterAudioPath("C:/users/harsh/desktop/ding3.wav")
+    obj.setKeyboardAudioPath("C:/users/harsh/desktop/keysound30.wav")
     x = obj.takeInput(True , "input : " )
     print("\n" , x , sep= "")
