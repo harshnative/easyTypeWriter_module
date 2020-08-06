@@ -247,15 +247,14 @@ class EasyInput:
                 # if the key pressed is backspace
                 elif(x == b"\x08"):
 
-                    if(makeSound):
-                        playsound(self.keyboardAudioPath)
-
                     l = len(string)
 
                     # backspace should not earse the message prompt itself
                     if(l <= messageLength):
                         pass
                     else:
+                    	if(makeSound):
+                        	playsound(self.keyboardAudioPath)
 
                         # erasing the string element by one for one backspace
                         string = string[:l-1]
