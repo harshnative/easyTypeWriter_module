@@ -44,7 +44,6 @@ class _GetchWindows:
 getch = _Getch()
 
 
-
 # thread for enter key sound
 class enterSound(Thread):
     # function name should be run 
@@ -80,7 +79,6 @@ class EasyInput:
         self.enterAudioPath = None
         self.keyboardAudioPath = None
 
-        self.obj = enterSound()
 
         # byte code character dictionary
         self.dict = {
@@ -208,7 +206,6 @@ class EasyInput:
     # set enter sound audio file path
     def setEnterAudioPath(self, fullPath):
         self.enterAudioPath = fullPath
-        self.obj.setPath(self.enterAudioPath)
 
     # set enter sound audio file path
     def setKeyboardAudioPath(self, fullPath):
@@ -225,6 +222,9 @@ class EasyInput:
         string = messagePrompt
         messageLength = len(messagePrompt)
 
+        objEnter = enterSound()
+        objEnter.setPath(self.enterAudioPath)
+
         while(1):
             
             #printing the string to show the visual output 
@@ -239,7 +239,7 @@ class EasyInput:
 
                     # making sound
                     if(makeSound):
-                        self.obj.start()
+                        objEnter.start()
 
                     # returning the string by cutting the message prompt from the string
                     return string[messageLength:]
@@ -301,5 +301,11 @@ if __name__ == "__main__":
     print("started")
     obj.setEnterAudioPath("C:/users/harsh/desktop/ding3.wav")
     obj.setKeyboardAudioPath("C:/users/harsh/desktop/keysound30.wav")
+    x = obj.takeInput(True , "input : " )
+    print("\n" , x , sep= "")
+    x = obj.takeInput(True , "input : " )
+    print("\n" , x , sep= "")
+    x = obj.takeInput(True , "input : " )
+    print("\n" , x , sep= "")
     x = obj.takeInput(True , "input : " )
     print("\n" , x , sep= "")
